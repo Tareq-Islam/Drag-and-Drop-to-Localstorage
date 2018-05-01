@@ -1,14 +1,21 @@
-$(document).ready(function () {
-    showProduct(item); // To load loaclstorage data
-    jQuery.event.props.push('dataTransfer');
-    $('#productList').on('dragstart', dragging);
-    $('#dropZone').on('dragover', enterDropZone);
-    $('#dropZone').on('dragleave', leaveDropZone);
-    $('#dropZone').on('dragover', preventDefault);
-    $('#dropZone').on('drop', dropItem);
-    $('#clearList').on('click', clearBazarList);
-    $('#reload').on('click', reloadBrowser);
-});
+window.onload = function() {
+    showProduct(item);
+};
+
+function bindFunc(event, id, func) {
+    var element = document.getElementById(id);
+    return element.addEventListener(event, func, false);
+}
+
+bindFunc('dragstart', 'productList', dragging);
+bindFunc('dragover', 'dropZone', enterDropZone);
+bindFunc('dragleave', 'dropZone', leaveDropZone);
+bindFunc('dragover', 'dropZone', preventDefault);
+bindFunc('drop', 'dropZone', dropItem);
+bindFunc('click', 'clearList', clearBazarList);
+bindFunc('click', 'reload', reloadBrowser);
+
+
 // To set data to dataTransfer when start dragging
 function dragging(e) {
     var val = e.target.getAttribute('data-value');
@@ -17,11 +24,15 @@ function dragging(e) {
 }
 // To add class when enter drop zone
 function enterDropZone(e) {
-    $('#dropZone').addClass('dropZoneOver');
+    var element = document.getElementById('dropZone');
+    element.classList.add('dropZoneOver');
+    e.preventDefault();
 }
 // To remove class when leave drop zone
 function leaveDropZone(e) {
-    $('#dropZone').removeClass('dropZoneOver');
+    var element = document.getElementById('dropZone');
+    element.classList.remove('dropZoneOver');
+    e.preventDefault();
 }
 // To prevent default
 function preventDefault(e) {
@@ -35,7 +46,9 @@ if (localStorage.getItem('item') === null) {
 }
 // To grab droped item and insert into localstorage
 function dropItem(e) {
-    $('#dropZone').removeClass('dropZoneOver');
+    e.preventDefault();
+    var element = document.getElementById('dropZone');
+    element.classList.remove('dropZoneOver');
 
     var data = e.dataTransfer.getData('text');
 
